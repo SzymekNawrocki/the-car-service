@@ -1,12 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { CarsService } from './cars/cars.service';
+import { pgConfig } from 'dbConfig';
+import { CarsModule } from './cars/cars.module';
 
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [
+    TypeOrmModule.forRoot(pgConfig),
+    UsersModule,
+    CarsModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,],
 })
 export class AppModule {}
