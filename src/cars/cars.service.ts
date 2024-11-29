@@ -23,7 +23,7 @@ export class CarsService {
 
   async findOne(id: number): Promise<Car> {
     const car = await this.carRepository.findOne({
-      where: { id }, // Określamy, że szukamy samochodu o danym ID
+      where: { id }, 
     });
     if (!car) {
       throw new NotFoundException(`Car with ID ${id} not found`);

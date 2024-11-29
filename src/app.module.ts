@@ -1,19 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
-import { CarsService } from './cars/cars.service';
-import { pgConfig } from 'dbConfig';
 import { CarsModule } from './cars/cars.module';
+import { UsersModule } from './users/users.module';
+import { getPgConfig } from 'dbConfig';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(pgConfig),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => getPgConfig(configService),
+    }),
+    CarsModule,
     UsersModule,
-    CarsModule
+    AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService,],
 })
 export class AppModule {}
