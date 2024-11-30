@@ -1,40 +1,19 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Req,
-  Res,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login-dto';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @HttpCode(HttpStatus.OK)
-  async login(
-    @Body() loginDto: LoginDto,
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<void> {
-    try {
-      const message = await this.authService.login(loginDto, req.session);
-      res.send({ message });
-    } catch (error) {
-      res.status(error.status || HttpStatus.UNAUTHORIZED).send({
-        error: error.message || 'Login failed',
-      });
-    }
+  async login(@Body() loginDto: LoginDto, @Req() req: Request): Promise<{ message: string }> {
+    const message = await this.authService.login(loginDto, req.session);
+    return { message };
   }
 
   @Get('status')
-  @HttpCode(HttpStatus.OK)
   async checkStatus(@Req() req: Request): Promise<{ message: string; user?: any }> {
     if (this.authService.isLoggedIn(req.session)) {
       return { message: 'User is logged in', user: req.session.user };
@@ -43,14 +22,8 @@ export class AuthController {
   }
 
   @Get('logout')
-  async logout(@Req() req: Request, @Res() res: Response): Promise<void> {
-    try {
-      const message = await this.authService.logout(req.session);
-      res.status(HttpStatus.OK).send({ message });
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-        error: 'Logout failed',
-      });
-    }
+  async logout(@Req() req: Request): Promise<{ message: string }> {
+    const message = await this.authService.logout(req.session);
+    return { message };
   }
 }
