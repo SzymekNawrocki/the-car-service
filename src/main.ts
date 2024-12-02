@@ -1,27 +1,30 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+ 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
+      whitelist: true, 
     }),
   );
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'supersecretkey',
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'development',
-        maxAge: 24 * 60 * 60 * 1000,
-      },
-    }),
-  );
+
+ 
+  const config = new DocumentBuilder()
+    .setTitle('API Documentation') 
+    .setDescription('API for managing cars and users') 
+    .setVersion('1.0') 
+    .addBearerAuth() 
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('/', app, document); 
+
+  // Start serwera
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

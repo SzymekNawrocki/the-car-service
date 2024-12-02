@@ -18,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     CarsModule,
     UsersModule,
-    AuthModule,
+    AuthModule, // Moduł uwierzytelniania zarządza sesjami
   ],
 })
 export class AppModule {}
