@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/users/entity/user.entity';
 
 @Entity('cars')
 export class Car {
@@ -26,4 +27,8 @@ export class Car {
   @Column()
   @ApiProperty({ description: 'The type of engine in the car', example: 'V8' })
   engine: string;
+
+  @ManyToOne(() => User, (user) => user.cars, { onDelete: 'CASCADE' })
+  @ApiProperty({ description: 'The owner of the car', type: () => User })
+  owner: User;
 }

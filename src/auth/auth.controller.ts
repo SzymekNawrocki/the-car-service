@@ -14,7 +14,7 @@ interface SessionData {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
+  @Post()
   @ApiOperation({ summary: 'Login a user' })
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -31,7 +31,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('logout')
+  @Get()
   @ApiOperation({ summary: 'Logout a user' })
   @ApiResponse({ status: 200, description: 'Logged out successfully' })
   async logout(@Session() session: SessionData): Promise<string> {
